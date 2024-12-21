@@ -20,7 +20,14 @@ output "Dev_project_cidr_block" {
     value = azurerm_subnet.Dev_project_public_subnet.*.address_prefixes
 }
 
+output "location" {
+    value = azurerm_resource_group.smart.location
+  
+}
 
+output "resource_group_name" {
+    value = azurerm_resource_group.smart.name
+}
 
 # resource location
 resource "azurerm_resource_group" "smart" {
@@ -90,7 +97,7 @@ resource "azurerm_network_interface" "smart" {
 
     ip_configuration {
         name                          = "internal"
-        subnet_id                     = azurerm_subnet.Dev_project_public_subnet[count.index].id
+        subnet_id                     = azurerm_subnet.Dev_project_public_subnet[0].id
         private_ip_address_allocation = "Dynamic"
     }
 }

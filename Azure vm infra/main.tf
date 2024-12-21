@@ -17,3 +17,20 @@ module "network_security_group" {
   location                   = var.location          
   source_address_prefix    = tolist(module.networking.Dev_project_cidr_block )    
 }
+
+module "virtual_machine" {
+    source = "./virtual-machine"
+    vm_name = var.vm_name
+    vm_size = var.vm_size
+    location = module.networking.location
+    resource_group_name = module.networking.resource_group_name
+    network_interface_ids = [tolist(module.networking.Dev_project_public_subnet)[0]]
+    admin_username = var.admin_username
+    admin_password = var.admin_password
+    public_key = var.public_key
+    subnet_id = module.networking.Dev_project_public_subnet[0]
+    network_security_group_id = module.network_security_group.nsg_id
+    enable_public_ip = true
+    user_data_install_apache = file("./template/ec2_install_apache.sh")
+  
+}
