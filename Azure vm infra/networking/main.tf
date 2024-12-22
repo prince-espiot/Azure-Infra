@@ -88,16 +88,3 @@ resource "azurerm_subnet_route_table_association" "smartroutetableassociation" {
     route_table_id = azurerm_route_table.smartroutetable.id
 }
 
-#set up the network interface
-resource "azurerm_network_interface" "smart" {
-    name                = "smart-nic"
-    count = length(azurerm_subnet.Dev_project_public_subnet)
-    location            = azurerm_resource_group.smart.location
-    resource_group_name = azurerm_resource_group.smart.name
-
-    ip_configuration {
-        name                          = "internal"
-        subnet_id                     = azurerm_subnet.Dev_project_public_subnet[0].id
-        private_ip_address_allocation = "Dynamic"
-    }
-}

@@ -12,9 +12,9 @@ module "networking" {
 
 module "network_security_group" {
   source                     = "./security-groups"
-  nsg_name                   = "NSG for VMs to enable SSH(22) and HTTP(80)"
-  resource_group_name        = var.resource_group_name 
-  location                   = var.location          
+  nsg_name                   = "nsg-vm-ssh-http"
+  resource_group_name        = module.networking.resource_group_name
+  location                   = module.networking.location         
   source_address_prefix    = tolist(module.networking.Dev_project_cidr_block )    
 }
 
@@ -24,9 +24,7 @@ module "virtual_machine" {
     vm_size = var.vm_size
     location = module.networking.location
     resource_group_name = module.networking.resource_group_name
-    network_interface_ids = [tolist(module.networking.Dev_project_public_subnet)[0]]
-    admin_username = var.admin_username
-    admin_password = var.admin_password
+    network_interface_ids = [azurerm_network_interface.smart.id]
     public_key = var.public_key
     subnet_id = module.networking.Dev_project_public_subnet[0]
     network_security_group_id = module.network_security_group.nsg_id
